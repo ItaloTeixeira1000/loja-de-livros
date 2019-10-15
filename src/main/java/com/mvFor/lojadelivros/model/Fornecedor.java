@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "fornecedor")
@@ -14,17 +16,24 @@ public class Fornecedor {
 	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Long codigo;
 	
+	@NotNull
+	@Size(min = 3, max = 30 )
 	@Column(name="razao_social")
 	private String razaoSocial;
 	
+	@NotNull
+	@Size(min = 1, max = 30 )
 	@Column(name = "nome_fantasma")
 	private String nomeFantasma;
 	
+	@NotNull
 	private boolean ativo;
 	
+	@NotNull
 	private String cnpj;
 	
-	@Column(name= "incricao_estadual")
+	@NotNull
+	@Column(name= "inscricao_estadual")
 	private Long inscricaoEstadual;
 	
 	private String telefone;
@@ -95,4 +104,31 @@ public class Fornecedor {
 	public void setEnderecoFornecedor(EnderecoFornecedor enderecoFornecedor) {
 		this.enderecoFornecedor = enderecoFornecedor;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Fornecedor other = (Fornecedor) obj;
+		if (codigo == null) {
+			if (other.codigo != null)
+				return false;
+		} else if (!codigo.equals(other.codigo))
+			return false;
+		return true;
+	}
+	
+	
 }

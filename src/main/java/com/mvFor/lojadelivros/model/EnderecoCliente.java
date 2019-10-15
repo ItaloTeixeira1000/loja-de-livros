@@ -4,7 +4,7 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.Size;
 
 @Embeddable
-public class EnderecoFornecedor {
+public class EnderecoCliente {
 	
 	private String logradouro;
 	private String numero;
@@ -58,6 +58,5 @@ public class EnderecoFornecedor {
 		this.estado = estado;
 	}
 	
-	
-	
+
 }
