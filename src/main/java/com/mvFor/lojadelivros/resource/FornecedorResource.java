@@ -1,6 +1,5 @@
 package com.mvFor.lojadelivros.resource;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,10 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.mvFor.lojadelivros.event.RecursoCriadoEvent;
 import com.mvFor.lojadelivros.model.Fornecedor;
@@ -46,18 +43,20 @@ public class FornecedorResource {
 		return fornecedorRepository.findAll();
 	}
 	
-	@PostMapping
-	public ResponseEntity<Fornecedor> criar(@Valid @RequestBody Fornecedor fornecedor, HttpServletResponse response) {
-		Fornecedor fornecedorSalvo = fornecedorRepository.save(fornecedor);
-		publisher.publishEvent(new RecursoCriadoEvent(this, response, fornecedor.getCodigo()));
-		return ResponseEntity.status(HttpStatus.CREATED).body(fornecedorSalvo);
-	}
-	
 	@GetMapping("/{codigo}")
 	public ResponseEntity<Optional<Fornecedor>> buscarPeloCodigo(@PathVariable Long codigo) {
 		Optional<Fornecedor> fornecedor = fornecedorRepository.findById(codigo);
 		return fornecedor.isPresent() ? ResponseEntity.ok(fornecedor) : ResponseEntity.notFound().build();
 	}
+	
+	@PostMapping
+	public ResponseEntity<Fornecedor> criar(@Valid @RequestBody Fornecedor fornecedor, HttpServletResponse response) {
+		Fornecedor fornecedorSalvo = fornecedorRepository.save(fornecedor);
+		publisher.publishEvent(new RecursoCriadoEvent(this, response, fornecedorSalvo.getCodigo()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(fornecedorSalvo);
+	}
+	
+
 	
 	@DeleteMapping("/{codigo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -74,6 +73,7 @@ public class FornecedorResource {
 	}
 	
 	@PutMapping("/{codigo}/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void atualizarAtivo(@PathVariable Long codigo, @RequestBody boolean ativo){
 		 
 		fornecedorService.atualizarPropriedadeAtivo(codigo, ativo);

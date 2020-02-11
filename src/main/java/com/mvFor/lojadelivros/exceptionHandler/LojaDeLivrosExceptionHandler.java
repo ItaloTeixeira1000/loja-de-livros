@@ -28,7 +28,7 @@ public class LojaDeLivrosExceptionHandler extends ResponseEntityExceptionHandler
 	private MessageSource messageSource;
 	
 	@Override
-	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+	public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		String mensagemUsuario = messageSource.getMessage("mensagem.invalida", null, LocaleContextHolder.getLocale());
 		String mensagemDesenvolvedor = ex.getCause().toString();
@@ -36,14 +36,14 @@ public class LojaDeLivrosExceptionHandler extends ResponseEntityExceptionHandler
 	}
 	
 	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+	public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		List<Erro> erros = criarListaDeErros(ex.getBindingResult());
 		return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
 	}
 	
 	@ExceptionHandler({EmptyResultDataAccessException.class})
-	protected ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, 
+	public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, 
 			 WebRequest request) {
 		String mensagemUsuario = messageSource.getMessage("recurso.nao-encontrado", null, LocaleContextHolder.getLocale());
 		String mensagemDesenvolvedor = ex.toString();
@@ -51,7 +51,7 @@ public class LojaDeLivrosExceptionHandler extends ResponseEntityExceptionHandler
 		return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
 	}
 	
-	private List<Erro> criarListaDeErros(BindingResult bindingResult) {
+	public List<Erro> criarListaDeErros(BindingResult bindingResult) {
 		List<Erro> erros = new ArrayList<>();
 		
 		for(FieldError fieldError: bindingResult.getFieldErrors()) {
@@ -63,7 +63,7 @@ public class LojaDeLivrosExceptionHandler extends ResponseEntityExceptionHandler
 		return erros;
 	}
 
-	private class Erro {
+	public static class Erro {
 		
 		public String mensagemUsuario;
 		public String mensagemDesenvolvedor;

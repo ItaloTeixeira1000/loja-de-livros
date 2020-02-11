@@ -15,6 +15,7 @@ public class EnderecoFornecedor {
 	
 	@Size(max = 2)
 	private String estado;
+	
 	public String getLogradouro() {
 		return logradouro;
 	}

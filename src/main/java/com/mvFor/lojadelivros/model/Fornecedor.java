@@ -7,8 +7,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "fornecedor")
@@ -22,7 +25,7 @@ public class Fornecedor {
 	private String razaoSocial;
 	
 	@NotNull
-	@Size(min = 1, max = 30 )
+	@Size(min = 1, max = 50 )
 	@Column(name = "nome_fantasma")
 	private String nomeFantasma;
 	
@@ -40,6 +43,12 @@ public class Fornecedor {
 	
 	@Embedded
 	private EnderecoFornecedor enderecoFornecedor;
+	
+	@JsonIgnore
+	@Transient
+	public boolean isInativo() {
+		return !this.ativo;
+	}
 
 	public Long getCodigo() {
 		return codigo;

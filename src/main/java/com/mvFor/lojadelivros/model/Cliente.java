@@ -6,8 +6,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="cliente")
@@ -19,7 +22,7 @@ public class Cliente {
 	private String telefone;
 	
 	@NotNull
-	@Size(min = 2, max = 10)
+	@Size(min = 1, max = 10)
 	private String sexo;
 	
 	@NotNull
@@ -33,6 +36,11 @@ public class Cliente {
 	@Size(min = 2, max = 50)
 	private String nome;
 	
+	@JsonIgnore
+	@Transient
+	public boolean isInativo() {
+		return !this.ativo;
+	}
 
 	
 	public String getNome() {
