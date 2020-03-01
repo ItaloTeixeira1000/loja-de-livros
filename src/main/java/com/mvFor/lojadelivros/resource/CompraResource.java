@@ -13,6 +13,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,12 +49,14 @@ public class CompraResource {
 	private MessageSource messageSource;
 	
 	@GetMapping
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_COMPRA') and #oauth2.hasScope('read')")
 	private List<Compra> pesquisar(Compra compra){
 		
 		return compraRepository.filtrar(compra);
 	}
 	
 	@GetMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_COMPRA') and #oauth2.hasScope('read')")
 	private ResponseEntity<Optional<Compra>> buscarPeloCodigo(@PathVariable Long codigo){
 		Optional<Compra> compra = compraRepository.findById(codigo);
 		
@@ -61,6 +64,7 @@ public class CompraResource {
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_COMPRA') and #oauth2.hasScope('write')")
 	private ResponseEntity<?> criar(@Valid @RequestBody Compra compra, HttpServletResponse response){
 		
 		Compra compraSalva = compraService.salvar(compra);
@@ -81,6 +85,7 @@ public class CompraResource {
 	}
 	
 	@PutMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_COMPRA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Compra> atualizar(@PathVariable Long codigo, @Valid @RequestBody Compra compra){
 		try {
 			Compra compraSalva = compraService.atualizar(codigo, compra); 
@@ -93,6 +98,7 @@ public class CompraResource {
 	
 	@DeleteMapping("/{codigo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ROLE_REMOVER_COMPRA') and #oauth2.hasScope('write')")
 	public void deletar(@PathVariable Long codigo){
 		
 		compraRepository.deleteById(codigo);

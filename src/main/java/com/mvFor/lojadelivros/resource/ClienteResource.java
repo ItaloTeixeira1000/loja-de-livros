@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,17 +40,20 @@ public class ClienteResource {
 	private ClienteService clienteService;
 	
 	@GetMapping
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CLIENTE') and #oauth2.hasScope('read')")
 	public List<Cliente> pesquisar(){
 		return clienteRepository.findAll();
 	}
 	
 	@GetMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CLIENTE') and #oauth2.hasScope('read')")
 	public ResponseEntity<Optional<Cliente>> buscarPelodigo(@PathVariable Long codigo) {
 		Optional<Cliente> cliente = clienteRepository.findById(codigo);
 		return cliente.isPresent() ? ResponseEntity.ok(cliente) : ResponseEntity.notFound().build();
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CLIENTE') and #oauth2.hasScope('write')")
 	public ResponseEntity<Cliente> criar(@Valid @RequestBody Cliente cliente, HttpServletResponse response) {
 		Cliente clienteSalvo = clienteRepository.save(cliente);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, cliente.getCodigo()));
@@ -57,12 +61,14 @@ public class ClienteResource {
 	}
 	
 	@DeleteMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_REMOVER_CLIENTE') and #oauth2.hasScope('write')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long codigo) {
 		clienteRepository.deleteById(codigo);
 	}
 	
 	@PutMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CLIENTE') and #oauth2.hasScope('write')")
 	public ResponseEntity<Cliente> atualizar(@PathVariable Long codigo, @Valid @RequestBody Cliente cliente){
 		Cliente clienteSalvo = clienteService.atualizar(codigo, cliente);
 		
@@ -71,6 +77,7 @@ public class ClienteResource {
 	}
 	
 	@PutMapping("/{codigo}/ativo")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CLIENTE') and #oauth2.hasScope('write')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void atualizarPropriedadeAtivo(@PathVariable Long codigo, @Valid @RequestBody boolean ativo){
 		

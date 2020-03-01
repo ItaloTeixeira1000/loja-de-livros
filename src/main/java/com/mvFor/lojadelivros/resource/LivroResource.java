@@ -13,6 +13,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,17 +49,20 @@ public class LivroResource {
 	private MessageSource messageSource;
 	
 	@GetMapping
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LIVRO') and #oauth2.hasScope('read')")
 	public List<Livro> pesquisar(Livro livro){
 		return livroRepository.filtrar(livro);
 	}
 	
 	@GetMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LIVRO') and #oauth2.hasScope('read')")
 	public ResponseEntity<Optional<Livro>> buscarPeloCodigo(@PathVariable Long codigo){
 		Optional<Livro> livroSalvo = livroRepository.findById(codigo);
 		return livroSalvo.isPresent() ? ResponseEntity.ok(livroSalvo) : ResponseEntity.notFound().build();
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LIVRO') and #oauth2.hasScope('write')")
 	public ResponseEntity<Livro> criar(@Valid @RequestBody Livro livro, HttpServletResponse response){
 		Livro livroSalvo = service.salvar(livro);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, livro.getCodigo()));
@@ -76,12 +80,14 @@ public class LivroResource {
 	
 	
 	@DeleteMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_REMOVER_LIVRO') and #oauth2.hasScope('write')")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long codigo) {
 		livroRepository.deleteById(codigo);
 	}
 	
 	@PutMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LIVRO') and #oauth2.hasScope('write')")
 	public ResponseEntity<Livro> atualizar(@Valid @RequestBody Livro livro, @PathVariable Long codigo ){
 		
 		try {
