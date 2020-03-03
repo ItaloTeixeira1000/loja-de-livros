@@ -23,8 +23,8 @@ public class Compra {
 	
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "codigo_cliente")
-	private Cliente cliente;
+	@JoinColumn(name = "codigo_usuario")
+	private Usuario usuario;
 	
 	@NotNull
 	@Column(name = "data_compra")
@@ -78,12 +78,13 @@ public class Compra {
 		this.codigo = codigo;
 	}
 
-	public Cliente getCliente() {
-		return cliente;
+
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 	public LocalDate getDataCompra() {

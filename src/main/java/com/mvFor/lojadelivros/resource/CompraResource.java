@@ -68,7 +68,7 @@ public class CompraResource {
 	private ResponseEntity<?> criar(@Valid @RequestBody Compra compra, HttpServletResponse response){
 		
 		Compra compraSalva = compraService.salvar(compra);
-		publisher.publishEvent(new RecursoCriadoEvent(this, response, compra.getCliente().getCodigo()));
+		publisher.publishEvent(new RecursoCriadoEvent(this, response, compra.getUsuario().getCodigo()));
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(compraSalva);
 		

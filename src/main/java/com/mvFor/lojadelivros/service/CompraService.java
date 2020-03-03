@@ -6,10 +6,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mvFor.lojadelivros.model.Cliente;
 import com.mvFor.lojadelivros.model.Compra;
-import com.mvFor.lojadelivros.repository.ClienteRepository;
+import com.mvFor.lojadelivros.model.Usuario;
 import com.mvFor.lojadelivros.repository.CompraRepository;
+import com.mvFor.lojadelivros.repository.UsuarioRepository;
 import com.mvFor.lojadelivros.service.exception.ClienteInexistenteOuInativoException;
 
 @Service
@@ -19,11 +19,11 @@ public class CompraService {
 	private CompraRepository compraRepository;
 	
 	@Autowired
-	private ClienteRepository clienteRepository;
+	private UsuarioRepository usuarioRepository;
 	
 	public Compra salvar(Compra compra) {
 		
-		validarCliente(compra);
+		validarUsuario(compra);
 		
 		return compraRepository.save(compra);
 	}
@@ -31,8 +31,8 @@ public class CompraService {
 	public Compra atualizar(Long codigo, Compra compra) {
 		Compra compraSalva = buscarCompraExistente(codigo);
 		
-		if(!compra.getCliente().equals(compraSalva.getCliente())) {
-			validarCliente(compra);
+		if(!compra.getUsuario().equals(compraSalva.getUsuario())) {
+			validarUsuario(compra);
 		}
 		
 		BeanUtils.copyProperties(compra, compraSalva, "codigo");
@@ -40,14 +40,14 @@ public class CompraService {
 		return compraRepository.save(compraSalva);
 	}
 
-	private void validarCliente(Compra compra) {
-		Optional<Cliente> cliente = null;
+	private void validarUsuario(Compra compra) {
+		Optional<Usuario> usuario = null;
 		
-		if(compra.getCliente().getCodigo() != null) {
-			cliente = clienteRepository.findById(compra.getCliente().getCodigo());
+		if(compra.getUsuario().getCodigo() != null) {
+			usuario = usuarioRepository.findById(compra.getUsuario().getCodigo());
 		}
 		
-		if(!cliente.isPresent() || cliente.get().isInativo()) {
+		if(!usuario.isPresent()) {
 			throw new ClienteInexistenteOuInativoException();
 		}
 		
