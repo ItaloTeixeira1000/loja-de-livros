@@ -28,6 +28,8 @@ public class CompraRepositoryImpl implements CompraRepositoryQuery {
 		CriteriaQuery<Compra> criteria = builder.createQuery(Compra.class);
 		Root<Compra> root = criteria.from(Compra.class);
 		
+		
+		
 		Predicate[] predicates = criarRestricoes(compra, builder, root);
 		
 		criteria.where(predicates);
@@ -41,24 +43,25 @@ public class CompraRepositoryImpl implements CompraRepositoryQuery {
 		
 		List<Predicate> predicates = new ArrayList<>();
 		
-		if(!StringUtils.isEmpty(compra.getDataCompra())) {
-		
-			predicates.add(builder.equal(root.get(Compra_.dataCompra), compra.getDataCompra()));
-		}
-		
-		if(!StringUtils.isEmpty(compra.getDataVencimento())) {
-			
-			predicates.add(builder.equal(root.get(Compra_.dataVencimento), compra.getDataVencimento()));
-		}
 		
 		if(!StringUtils.isEmpty(compra.getQtd()) && compra.getQtd() != 0) {
 			
-			predicates.add(builder.equal(root.get(Compra_.dataVencimento), compra.getDataVencimento()));
+			predicates.add(builder.equal(root.get(Compra_.qtd), compra.getQtd()));
 		}
 		
 		if(!StringUtils.isEmpty(compra.getDescricao())) {
 			
 			predicates.add(builder.like(builder.lower(root.get(Compra_.descricao)), "%" + compra.getDescricao().toLowerCase() + "%"));
+		}
+		
+		if(compra.getUsuario() != null) {
+			
+			predicates.add(builder.equal(root.get(Compra_.usuario), compra.getUsuario().getCodigo()));
+		}
+		
+		if(compra.getLivro() != null) {
+			
+			predicates.add(builder.equal(root.get(Compra_.livro), compra.getLivro().getCodigo()));
 		}
 		
 		return predicates.toArray(new Predicate[predicates.size()]);

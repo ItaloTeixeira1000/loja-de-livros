@@ -50,14 +50,14 @@ public class CompraResource {
 	
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_COMPRA') and #oauth2.hasScope('read')")
-	private List<Compra> pesquisar(Compra compra){
+	public List<Compra> pesquisar(Compra compra){
 		
 		return compraRepository.filtrar(compra);
 	}
 	
 	@GetMapping("/{codigo}")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_COMPRA') and #oauth2.hasScope('read')")
-	private ResponseEntity<Optional<Compra>> buscarPeloCodigo(@PathVariable Long codigo){
+	public ResponseEntity<Optional<Compra>> buscarPeloCodigo(@PathVariable Long codigo){
 		Optional<Compra> compra = compraRepository.findById(codigo);
 		
 		return compra.isPresent() ? ResponseEntity.ok(compra) : ResponseEntity.notFound().build();
@@ -65,7 +65,7 @@ public class CompraResource {
 	
 	@PostMapping
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_COMPRA') and #oauth2.hasScope('write')")
-	private ResponseEntity<?> criar(@Valid @RequestBody Compra compra, HttpServletResponse response){
+	public ResponseEntity<?> criar(@Valid @RequestBody Compra compra, HttpServletResponse response){
 		
 		Compra compraSalva = compraService.salvar(compra);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, compra.getUsuario().getCodigo()));

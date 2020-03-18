@@ -39,8 +39,9 @@ public class CompraService {
 		
 		return compraRepository.save(compraSalva);
 	}
-
-	private void validarUsuario(Compra compra) {
+	
+	
+	public void validarUsuario(Compra compra) {
 		Optional<Usuario> usuario = null;
 		
 		if(compra.getUsuario().getCodigo() != null) {
