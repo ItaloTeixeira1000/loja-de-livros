@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +31,8 @@ import com.mvFor.lojadelivros.event.RecursoCriadoEvent;
 import com.mvFor.lojadelivros.exceptionHandler.LojaDeLivrosExceptionHandler.Erro;
 import com.mvFor.lojadelivros.model.Compra;
 import com.mvFor.lojadelivros.repository.CompraRepository;
+import com.mvFor.lojadelivros.repository.filter.CompraFilter;
+import com.mvFor.lojadelivros.repository.projection.ResumoCompra;
 import com.mvFor.lojadelivros.service.CompraService;
 import com.mvFor.lojadelivros.service.exception.ClienteInexistenteOuInativoException;
 
@@ -50,9 +54,16 @@ public class CompraResource {
 	
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_COMPRA') and #oauth2.hasScope('read')")
-	public List<Compra> pesquisar(Compra compra){
+	public List<Compra> pesquisar(CompraFilter compra){
 		
 		return compraRepository.filtrar(compra);
+	}
+	
+	@GetMapping(params = "resumo")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_COMPRA') and #oauth2.hasScope('read')")
+	public Page<ResumoCompra> resumir(CompraFilter compra, Pageable pageable){
+		
+		return compraRepository.resumir(compra, pageable);
 	}
 	
 	@GetMapping("/{codigo}")
