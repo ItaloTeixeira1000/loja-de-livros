@@ -1,10 +1,11 @@
 package com.mvFor.lojadelivros.repository.livro;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.mvFor.lojadelivros.model.Livro;
 
 public interface LivroRepositoryQuery {
 	
-	public List<Livro> filtrar(Livro livro);
+	public Page<Livro> filtrar(Livro livro, Pageable pageable);
 }

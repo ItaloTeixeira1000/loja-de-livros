@@ -29,7 +29,7 @@ public class CompraRepositoryImpl implements CompraRepositoryQuery {
 	private EntityManager manager;
 	
 	@Override
-	public List<Compra> filtrar(CompraFilter compra) {
+	public Page<Compra> filtrar(CompraFilter compra, Pageable pageable) {
 		
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<Compra> criteria = builder.createQuery(Compra.class);
@@ -43,7 +43,9 @@ public class CompraRepositoryImpl implements CompraRepositoryQuery {
 		
 		TypedQuery<Compra> query = manager.createQuery(criteria);
 		
-		return query.getResultList();
+		adicionarRestricoesDePaginacao(query, pageable);
+		
+		return new PageImpl<>(query.getResultList(), pageable, total(compra));
 	}
 	
 	@Override

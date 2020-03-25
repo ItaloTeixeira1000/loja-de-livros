@@ -11,6 +11,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
 import com.mvFor.lojadelivros.model.Livro;
@@ -22,7 +25,7 @@ public class LivroRepositoryImpl implements LivroRepositoryQuery{
 	private EntityManager manager;
 	
 	@Override
-	public List<Livro> filtrar(Livro livro) {
+	public Page<Livro> filtrar(Livro livro, Pageable pageable) {
 		
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<Livro> criteria = builder.createQuery(Livro.class);
@@ -34,7 +37,31 @@ public class LivroRepositoryImpl implements LivroRepositoryQuery{
 		
 		TypedQuery<Livro> query = manager.createQuery(criteria);
 		
-		return query.getResultList();
+		adicionarRestricoesDePaginacao(query, pageable);
+		
+		return new PageImpl<>(query.getResultList(), pageable, total(livro));
+	}
+
+	private Long total(Livro livro) {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
+		Root<Livro> root = criteria.from(Livro.class);
+		
+		Predicate[] predicates = criarRestricoes(livro, builder, root);
+		criteria.where(predicates);
+		
+		criteria.select(builder.count(root));
+		return manager.createQuery(criteria).getSingleResult();
+	}
+
+	private void adicionarRestricoesDePaginacao(TypedQuery<?> query, Pageable pageable) {
+		int paginaAtual = pageable.getPageNumber();
+		int totalRegistrosPorPagina = pageable.getPageSize();
+		int primeiroRegistroPorPagina = paginaAtual * totalRegistrosPorPagina;
+		
+		query.setFirstResult(primeiroRegistroPorPagina);
+		query.setMaxResults(totalRegistrosPorPagina);
+		
 	}
 
 	private Predicate[] criarRestricoes(Livro livro, CriteriaBuilder builder, Root<Livro> root) {

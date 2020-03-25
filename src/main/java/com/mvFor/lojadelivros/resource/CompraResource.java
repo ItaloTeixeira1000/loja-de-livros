@@ -54,9 +54,9 @@ public class CompraResource {
 	
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_COMPRA') and #oauth2.hasScope('read')")
-	public List<Compra> pesquisar(CompraFilter compra){
+	public Page<Compra> pesquisar(CompraFilter compra, Pageable pageable){
 		
-		return compraRepository.filtrar(compra);
+		return compraRepository.filtrar(compra, pageable);
 	}
 	
 	@GetMapping(params = "resumo")

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,8 +52,8 @@ public class LivroResource {
 	
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LIVRO') and #oauth2.hasScope('read')")
-	public List<Livro> pesquisar(Livro livro){
-		return livroRepository.filtrar(livro);
+	public Page<Livro> pesquisar(Livro livro, Pageable pageable){
+		return livroRepository.filtrar(livro, pageable);
 	}
 	
 	@GetMapping("/{codigo}")
