@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 import com.mvFor.lojadelivros.model.Fornecedor;
-public interface FornecedorRepository extends JpaRepository<Fornecedor, Long> {
+import com.mvFor.lojadelivros.repository.fornecedor.FornecedorRepositoryQuery;
+public interface FornecedorRepository extends JpaRepository<Fornecedor, Long>, FornecedorRepositoryQuery {
 
 }
