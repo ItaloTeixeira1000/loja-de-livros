@@ -94,6 +94,10 @@ public class LivroRepositoryImpl implements LivroRepositoryQuery{
 			predicates.add(builder.lessThanOrEqualTo(root.get(Livro_.preco), livro.getPreco()));
 		}
 		
+		if(!StringUtils.isEmpty(livro.getDataPublicacao())) {
+			predicates.add(builder.equal(root.get(Livro_.dataPublicacao), livro.getDataPublicacao()));
+		}
+		
 		
 		return predicates.toArray(new Predicate[predicates.size()]);
 	}

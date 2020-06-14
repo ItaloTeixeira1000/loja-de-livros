@@ -57,6 +57,10 @@ public class FornecedorRepositoryImpl implements FornecedorRepositoryQuery {
 			predicates.add(builder.like(builder.lower(root.get(Fornecedor_.cnpj)), "%" + fornecedor.getCnpj().toLowerCase() + "%"));
 		}
 		
+		if(!StringUtils.isEmpty(fornecedor.getAtivo())) {
+			predicates.add(builder.equal(root.get(Fornecedor_.ativo), Integer.parseInt(fornecedor.getAtivo())));
+		}
+		
 		if(!StringUtils.isEmpty(fornecedor.getInscricaoEstadual()) && fornecedor.getInscricaoEstadual() != 0) {
 			predicates.add(builder.equal(root.get(Fornecedor_.inscricaoEstadual), fornecedor.getInscricaoEstadual()));
 		}

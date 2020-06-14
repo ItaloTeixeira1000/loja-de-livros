@@ -8,7 +8,7 @@ public class FornecedorFilter {
 	
 	private String cnpj;
 	
-	private boolean ativo;
+	private String ativo;
 	
 	private Long inscricaoEstadual;
 
@@ -36,11 +36,11 @@ public class FornecedorFilter {
 		this.cnpj = cnpj;
 	}
 
-	public boolean isAtivo() {
+	public String getAtivo() {
 		return ativo;
 	}
 
-	public void setAtivo(boolean ativo) {
+	public void setAtivo(String ativo) {
 		this.ativo = ativo;
 	}
 

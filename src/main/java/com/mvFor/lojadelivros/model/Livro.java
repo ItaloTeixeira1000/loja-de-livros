@@ -13,6 +13,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name = "livro")
 public class Livro {
@@ -32,6 +34,7 @@ public class Livro {
 	private Long isbn;
 	
 	@Column(name = "data_publicacao")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dataPublicacao;
 	
 	private int paginas;
